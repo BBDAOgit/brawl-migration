@@ -22,7 +22,7 @@ async function main() {
 
 	const block = await client.getBlock();
 
-	const contractAddress = "0xD2963F7e218609B91373cDdA853b20746bA24D61";
+	const contractAddress = "0xdEEc08383309c20815ebfDf83BD762B5e5DDe8cA";
 	
 	const contract = getContract({
 		abi,

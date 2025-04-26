@@ -16,7 +16,7 @@ type Hero = {
 const isTestnet = true;
 
 const chain = isTestnet ? skaleNebulaTestnet : skaleNebula;
-const contractAddress = isTestnet ? "0xd1A9ECdF1acA8b3d525ecF2365f7341dEA2dDD3F" : "0x"
+const contractAddress = isTestnet ? "0xdEEc08383309c20815ebfDf83BD762B5e5DDe8cA" : "0x"
 
 async function main() {
 

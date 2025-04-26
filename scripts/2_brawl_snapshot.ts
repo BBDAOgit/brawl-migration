@@ -1,4 +1,4 @@
-import { createPublicClient, http, zeroAddress } from "viem";
+import { createPublicClient, getAddress, http, zeroAddress } from "viem";
 import { skaleBlockBrawlers } from "viem/chains";
 import { writeFile } from "fs/promises";
 import * as path from "path";
@@ -8,18 +8,29 @@ type Balance = {
 	balance: string;
 }
 
-const BASE_URL = "https://frayed-decent-antares.explorer.mainnet.skalenodes.com/api?module=account&action=listaccounts";
+const BLOCKSCOUT_NATIVE_GAS_URL = "https://frayed-decent-antares.explorer.mainnet.skalenodes.com/api?module=account&action=listaccounts";
+const BLOCKSCOUT_HOLDERS_URL = "https://internal-hubs.explorer.mainnet.skalenodes.com:10021/api/v2/tokens/0x0cDf0cA966Fbd890dAC3Ea3226F348e2d5039B3a/holders";
 
 const BLACKLIST = [
 	"0xd2ba3e0000000000000000000000000000000000", // Etherbase
 ];
 
 async function loadBalances(page: number, offset: number) {
-	const url = `${BASE_URL}&page=${page}&offset=${offset}`;
+	const url = `${BLOCKSCOUT_NATIVE_GAS_URL}&page=${page}&offset=${offset}`;
 
 	const response = await fetch(url);
 	if (!response.ok) {
 		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+
+	return await response.json();
+}
+
+async function loadEuropaHolders() {
+	const url = new URL(BLOCKSCOUT_HOLDERS_URL);
+	const response = await fetch(url);
+	if (!response.ok) {
+		throw new Error(`HTTP Error! Status: ${response.status}`);
 	}
 
 	return await response.json();
@@ -40,6 +51,18 @@ async function main() {
 	let page = 1;
 	const offset = 250;
 	const MAX_BALANCE = BigInt("270000000000000000000000000");
+
+	const euroapHolders = await loadEuropaHolders();
+	// console.log("Europa Holders: ", euroapHolders);
+
+	for (const holder of euroapHolders.items) {
+		balances.push({
+			user: getAddress(holder.address.hash),
+			balance: holder.value
+		})
+	}
+
+	console.log("Europa Balances Added to List");
 
 	while (true) {
 		// Construct the URL with page and offset parameters
@@ -98,8 +121,6 @@ async function main() {
 	console.log("Addresses Tracked: ", balances.length);
 	console.timeEnd("Snapshot Completed In");
 	console.log("Snapshot written to: ", path.resolve(__dirname, `../snapshots/brawl-snapshot-${block.number}.json`));
-
-
 }
 
 main()

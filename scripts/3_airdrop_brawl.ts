@@ -16,7 +16,7 @@ type Token = {
 const isTestnet = true;
 
 const chain = isTestnet ? skaleNebulaTestnet : skaleNebula;
-const contractAddress = isTestnet ? "0xE8b11401351aD4501305fa8E04E259B818af752F" : "0x"
+const contractAddress = isTestnet ? "0x0cDf0cA966Fbd890dAC3Ea3226F348e2d5039B3a" : "0x"
 
 async function main() {
 
