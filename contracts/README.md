@@ -3,8 +3,9 @@
 ## Setup
 
 1. Run `cp .env.example .env` and copy the same private key in that you used in the root
-2. Run `forge compile` to make sure everything builds
-3. Visit https://sfuelstation.com and gas up your wallet on Nebula Mainnet & Testnet
+2. Run `forge solder install` to install Soldeer managed dependencies
+3. Run `forge compile` to make sure everything builds
+4. Visit https://sfuelstation.com and gas up your wallet on Nebula Mainnet & Testnet
 
 ## Deploying to Testnet
 

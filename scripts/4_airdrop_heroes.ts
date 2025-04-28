@@ -1,4 +1,4 @@
-import { createWalletClient, http, nonceManager, zeroAddress } from "viem";
+import { createWalletClient, getAddress, http, nonceManager, zeroAddress } from "viem";
 import { skaleNebula, skaleNebulaTestnet } from "viem/chains";
 import HeroesNebulaABI from "../abis/brawlHeroes.abi.json";
 import HeroesSnapshot from "../snapshots/nft-snapshot-7460737.json";
@@ -8,9 +8,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 type Hero = {
-	tokenId: BigInt;
-	owner: `0x${string}`;
-	heroCode: string;
+	to: `0x${string}`;
+	tokenId: bigint;
+	heroCode: bigint;
 }
 
 const isTestnet = true;
@@ -33,23 +33,15 @@ async function main() {
 		})
 	});
 
-	// const dropList: Token[] = (HeroesSnapshot.data.tokens as Hero[]).filter((v) => {
-	// 	if (v.balance !== "" && BigInt(v.balance) > BigInt(0)) {
-	// 		return v;
-	// 	}
-	// });
-
-	// const addresses = dropList.map((v) => v.address);
-	// const balances = dropList.map((v) => v.balance);
-
-	const heroes = HeroesSnapshot.data.tokens.map((token) => {
+	const heroes: Hero[] = HeroesSnapshot.data.tokens.map((token) => {
 		return {
-			to: token.owner,
+			to: getAddress(token.owner),
 			tokenId: BigInt(token.tokenId),
 			heroCode: BigInt(token.heroCode)
-		}
+		};
 	}).filter((v) => v.to !== zeroAddress);
-	// Should work for up to 13,000
+
+	// Should work for up to 13,000, limit 250
 	for (let i = 0; i < heroes.length; i+=250) {
 		const res = await walletClient.writeContract({
 			abi: HeroesNebulaABI,
@@ -61,8 +53,6 @@ async function main() {
 		});
 		console.log("Batch Mint Transaction Hash: ", res);
 	}
-	
-
 }
 
 main()

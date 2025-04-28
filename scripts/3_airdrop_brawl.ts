@@ -22,7 +22,7 @@ async function main() {
 
 	const PRIVATE_KEY = process.env.PRIVATE_KEY;
 	if (!PRIVATE_KEY) {
-		throw new Error("Missign Private Key");
+		throw new Error("Missing Private Key");
 	}
 
 	const walletClient = createWalletClient({
@@ -30,7 +30,8 @@ async function main() {
 		transport: http(),
 		account: privateKeyToAccount(PRIVATE_KEY as `0x${string}`, {
 			nonceManager
-		})
+		}),
+		pollingInterval: 250
 	});
 
 	const dropList: Token[] = (TokenSnapshot.data.balances as Token[]).filter((v) => {
@@ -42,16 +43,16 @@ async function main() {
 	const addresses = dropList.map((v) => v.address);
 	const balances = dropList.map((v) => v.balance);
 
-	for (let i = 0; i < balances.length; i+=250) {
+	for (let i = 0; i < balances.length; i+=50) {
 		const res = await walletClient.writeContract({
 			abi: BrawlTokenNebulaABI,
 			address: contractAddress,
 			functionName: "batchMint",
 			args: [
-				addresses,
-				balances.slice(i, i+250).map((v) => BigInt(v))
+				addresses.slice(i, i+50),
+				balances.slice(i, i+50).map((v) => BigInt(v))
 			],
-			gas: BigInt(268_000_000)
+			gas: BigInt(100_000_000)
 		});
 		console.log("Batch Mint Transaction Hash: ", res);
 	}
