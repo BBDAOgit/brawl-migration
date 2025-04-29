@@ -13,10 +13,10 @@ type Hero = {
 	heroCode: bigint;
 }
 
-const isTestnet = true;
+const isTestnet = false;
 
 const chain = isTestnet ? skaleNebulaTestnet : skaleNebula;
-const contractAddress = isTestnet ? "0xdEEc08383309c20815ebfDf83BD762B5e5DDe8cA" : "0x"
+const contractAddress = isTestnet ? "0x1845982514c7F1c7822f4F203acab40A615106fc" : "0xdEEc08383309c20815ebfDf83BD762B5e5DDe8cA"
 
 async function main() {
 

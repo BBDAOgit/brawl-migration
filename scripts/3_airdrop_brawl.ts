@@ -13,10 +13,10 @@ type Token = {
 	stale?: boolean;
 }
 
-const isTestnet = true;
+const isTestnet = false;
 
 const chain = isTestnet ? skaleNebulaTestnet : skaleNebula;
-const contractAddress = isTestnet ? "0x0cDf0cA966Fbd890dAC3Ea3226F348e2d5039B3a" : "0x"
+const contractAddress = isTestnet ? "0x620242472EA40e513bD0B24806681d16Dfb147c4" : "0x0cDf0cA966Fbd890dAC3Ea3226F348e2d5039B3a"
 
 async function main() {
 
